@@ -2,131 +2,164 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>My Website</title>
+  <title>聖介 | Personal Site</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       margin: 0;
-      padding: 0;
-      background: #f5f5f5;
+      font-family: "Segoe UI", sans-serif;
+      background: #fafafa;
       color: #333;
     }
+
+    /* ====== ヘッダー ====== */
     header {
+      text-align: center;
+      padding: 60px 20px;
       background: #1e88e5;
       color: #fff;
-      padding: 16px 24px;
     }
     header h1 {
       margin: 0;
-      font-size: 24px;
+      font-size: 36px;
     }
+
+    /* ====== PC用ナビ ====== */
     nav {
       background: #1565c0;
-      padding: 8px 24px;
+      padding: 10px 20px;
+      text-align: center;
     }
     nav a {
       color: #fff;
       text-decoration: none;
-      margin-right: 16px;
-      font-size: 14px;
+      margin: 0 12px;
+      font-size: 16px;
     }
+
+    /* ====== ハンバーガーボタン（スマホ用） ====== */
+    .menu-btn {
+      display: none;
+      font-size: 28px;
+      padding: 10px 20px;
+      background: #1565c0;
+      color: #fff;
+      border: none;
+      width: 100%;
+      text-align: left;
+    }
+
+    /* ====== スマホ用メニュー ====== */
+    .mobile-menu {
+      display: none;
+      background: #1565c0;
+      padding: 10px 20px;
+    }
+    .mobile-menu a {
+      display: block;
+      color: #fff;
+      padding: 10px 0;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+
+    /* ====== メイン ====== */
     main {
-      max-width: 960px;
-      margin: 24px auto;
-      padding: 0 16px 40px;
-      background: #fff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-      border-radius: 8px;
-    }
-    section {
-      padding: 24px 20px;
-      border-bottom: 1px solid #eee;
-    }
-    section:last-of-type {
-      border-bottom: none;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
     }
     h2 {
-      margin-top: 0;
-      font-size: 20px;
+      font-size: 24px;
       border-left: 4px solid #1e88e5;
-      padding-left: 8px;
+      padding-left: 10px;
     }
-    footer {
-      text-align: center;
-      font-size: 12px;
-      color: #777;
-      padding: 16px 0 24px;
-    }
-    .btn {
-      display: inline-block;
-      padding: 8px 16px;
-      background: #1e88e5;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 4px;
-      font-size: 14px;
-    }
-    .btn:hover {
-      background: #1565c0;
+
+    /* ====== スマホ用レイアウト ====== */
+    @media (max-width: 600px) {
+      nav {
+        display: none; /* PCメニューを非表示 */
+      }
+      .menu-btn {
+        display: block; /* ハンバーガー表示 */
+      }
+      header {
+        padding: 40px 10px;
+      }
+      header h1 {
+        font-size: 26px;
+      }
+      h2 {
+        font-size: 20px;
+      }
     }
   </style>
 </head>
+
 <body>
-  <header>
-    <h1>聖介のサイト</h1>
-  </header>
 
-  <nav>
-    <a href="#about">プロフィール</a>
-    <a href="#works">作品・実績</a>
-    <a href="#contact">お問い合わせ</a>
-  </nav>
+<header>
+  <h1>聖介</h1>
+  <p>個人サイト / ポートフォリオ</p>
+</header>
 
-  <main>
-    <section id="about">
-      <h2>プロフィール</h2>
-      <p>
-        ここに自己紹介を書きます。<br>
-        例）東京都在住の聖介です。WEB制作やプログラミング、デザインに興味があります。
-      </p>
-    </section>
+<!-- スマホ用ボタン -->
+<button class="menu-btn" onclick="toggleMenu()">☰ メニュー</button>
 
-    <section id="works">
-      <h2>作品・実績</h2>
-      <ul>
-        <li>作品A：説明をここに書く</li>
-        <li>作品B：説明をここに書く</li>
-        <li>作品C：説明をここに書く</li>
-      </ul>
-      <a href="#" class="btn">もっと見る</a>
-    </section>
+<!-- PC用メニュー -->
+<nav>
+  <a href="#about">自己紹介</a>
+  <a href="#works">作品</a>
+  <a href="#sns">SNS</a>
+  <a href="#contact">お問い合わせ</a>
+</nav>
 
-    <section id="contact">
-      <h2>お問い合わせ</h2>
-      <p>ご連絡は以下のフォームからどうぞ。（ダミー）</p>
-      <form>
-        <div>
-          <label>お名前：</label><br>
-          <input type="text" name="name" style="width: 100%; max-width: 320px;">
-        </div>
-        <div style="margin-top: 8px;">
-          <label>メールアドレス：</label><br>
-          <input type="email" name="email" style="width: 100%; max-width: 320px;">
-        </div>
-        <div style="margin-top: 8px;">
-          <label>メッセージ：</label><br>
-          <textarea name="message" rows="4" style="width: 100%; max-width: 480px;"></textarea>
-        </div>
-        <div style="margin-top: 12px;">
-          <button type="submit" class="btn">送信</button>
-        </div>
-      </form>
-    </section>
-  </main>
+<!-- スマホ用メニュー -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about">自己紹介</a>
+  <a href="#works">作品</a>
+  <a href="#sns">SNS</a>
+  <a href="#contact">お問い合わせ</a>
+</div>
 
-  <footer>
-    &copy; 2026 聖介
-  </footer>
+<main>
+  <section id="about">
+    <h2>自己紹介</h2>
+    <p>東京都在住の聖介です。WEB制作やデザインが好きです。</p>
+  </section>
+
+  <section id="works">
+    <h2>作品</h2>
+    <ul>
+      <li>作品A</li>
+      <li>作品B</li>
+      <li>作品C</li>
+    </ul>
+  </section>
+
+  <section id="sns">
+    <h2>SNS</h2>
+    <p>X / Instagram / YouTube など</p>
+  </section>
+
+  <section id="contact">
+    <h2>お問い合わせ</h2>
+    <p>SNSのDMからご連絡ください。</p>
+  </section>
+</main>
+
+<footer style="text-align:center; padding:20px; color:#777;">
+  © 2026 聖介
+</footer>
+
+<script>
+  function toggleMenu() {
+    const menu = document.getElementById("mobileMenu");
+    menu.style.display = (menu.style.display === "block") ? "none" : "block";
+  }
+</script>
+
 </body>
 </html>
+
