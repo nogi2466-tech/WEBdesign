@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>hayabee | Personal Site</title>
+  <title>hayabee</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
@@ -13,13 +13,7 @@
       color: #333;
     }
 
-    header {
-      text-align: center;
-      padding: 40px 20px;
-      background: #1e88e5;
-      color: #fff;
-    }
-
+    /* メニュー */
     nav {
       background: #1565c0;
       padding: 10px;
@@ -33,6 +27,7 @@
       cursor: pointer;
     }
 
+    /* ページ切り替え */
     .page {
       display: none;
       max-width: 900px;
@@ -48,6 +43,7 @@
       padding-left: 10px;
     }
 
+    /* カレンダー */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -56,26 +52,50 @@
       border: 1px solid #ccc;
       padding: 8px;
       text-align: center;
-      height: 50px;
+      height: 60px;
     }
     td:hover {
       background: #e3f2fd;
       cursor: pointer;
     }
 
+    /* スマホ用 */
+    @media (max-width: 600px) {
+      th, td {
+        height: 40px;
+        font-size: 12px;
+      }
+    }
+
+    /* 画像一覧 */
     .thumb {
       width: 120px;
       margin: 10px;
+      display: block;
+    }
+    .imgBox {
+      display: inline-block;
+      margin: 10px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      position: relative;
+    }
+    .delBtn {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: red;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
     }
   </style>
 </head>
 
 <body>
-
-<header>
-  <h1>hayabee</h1>
-  <p>Personal Site</p>
-</header>
 
 <nav>
   <a onclick="showPage('home')">ホーム</a>
@@ -131,8 +151,8 @@
   let currentYear = 2025;
   let currentMonth = 1; // 2月
 
-  let schedules = {}; // 予定保存
-  let images = [];    // 画像保存
+  let schedules = {}; // 予定
+  let images = [];    // 画像
 
   function renderCalendar() {
     const monthTitle = document.getElementById("monthTitle");
@@ -206,23 +226,42 @@
     const reader = new FileReader();
     reader.onload = function(e) {
       images.push({ date: date, src: e.target.result });
+      schedules[date] = "画像あり";
       displayImages();
+      renderCalendar();
     };
     reader.readAsDataURL(file);
   }
 
+  /* -------------------------
+     画像表示＋削除
+  ------------------------- */
   function displayImages() {
     const list = document.getElementById("imgList");
     list.innerHTML = "";
 
-    images.forEach(img => {
+    images.forEach((img, index) => {
       list.innerHTML += `
-        <div>
+        <div class="imgBox">
+          <button class="delBtn" onclick="deleteImage(${index})">×</button>
           <p>${img.date}</p>
           <img src="${img.src}" class="thumb">
         </div>
       `;
     });
+  }
+
+  function deleteImage(index) {
+    const date = images[index].date;
+
+    images.splice(index, 1);
+
+    if (!images.some(i => i.date === date)) {
+      delete schedules[date];
+    }
+
+    displayImages();
+    renderCalendar();
   }
 
   renderCalendar();
