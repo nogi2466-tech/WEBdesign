@@ -15,78 +15,57 @@
 
     header {
       text-align: center;
-      padding: 60px 20px;
+      padding: 40px 20px;
       background: #1e88e5;
       color: #fff;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 36px;
     }
 
     nav {
       background: #1565c0;
-      padding: 10px 20px;
+      padding: 10px;
       text-align: center;
     }
     nav a {
       color: #fff;
-      text-decoration: none;
       margin: 0 12px;
-      font-size: 16px;
-    }
-
-    .menu-btn {
-      display: none;
-      font-size: 28px;
-      padding: 10px 20px;
-      background: #1565c0;
-      color: #fff;
-      border: none;
-      width: 100%;
-      text-align: left;
-    }
-
-    .mobile-menu {
-      display: none;
-      background: #1565c0;
-      padding: 10px 20px;
-    }
-    .mobile-menu a {
-      display: block;
-      color: #fff;
-      padding: 10px 0;
       text-decoration: none;
-      border-bottom: 1px solid rgba(255,255,255,0.2);
+      font-size: 16px;
+      cursor: pointer;
     }
 
-    main {
+    .page {
+      display: none;
       max-width: 900px;
-      margin: 40px auto;
+      margin: 30px auto;
       padding: 0 20px;
     }
+    .active {
+      display: block;
+    }
+
     h2 {
-      font-size: 24px;
       border-left: 4px solid #1e88e5;
       padding-left: 10px;
     }
 
-    @media (max-width: 600px) {
-      nav {
-        display: none;
-      }
-      .menu-btn {
-        display: block;
-      }
-      header {
-        padding: 40px 10px;
-      }
-      header h1 {
-        font-size: 26px;
-      }
-      h2 {
-        font-size: 20px;
-      }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+      height: 50px;
+    }
+    td:hover {
+      background: #e3f2fd;
+      cursor: pointer;
+    }
+
+    .thumb {
+      width: 120px;
+      margin: 10px;
     }
   </style>
 </head>
@@ -95,51 +74,158 @@
 
 <header>
   <h1>hayabee</h1>
-  <p>Personal Site / Portfolio</p>
+  <p>Personal Site</p>
 </header>
 
-<button class="menu-btn" onclick="toggleMenu()">☰ メニュー</button>
-
-<!-- PC用メニュー -->
 <nav>
-  <a href="#home">ホーム</a>
-  <a href="#calendar">カレンダー</a>
-  <a href="#gallery">画像</a>
+  <a onclick="showPage('home')">ホーム</a>
+  <a onclick="showPage('calendar')">カレンダー</a>
+  <a onclick="showPage('gallery')">画像</a>
 </nav>
 
-<!-- スマホ用メニュー -->
-<div class="mobile-menu" id="mobileMenu">
-  <a href="#home">ホーム</a>
-  <a href="#calendar">カレンダー</a>
-  <a href="#gallery">画像</a>
+<!-- ホーム -->
+<div id="home" class="page active">
+  <h2>ホーム</h2>
+  <p>ようこそ、hayabeeのサイトへ。</p>
 </div>
 
-<main>
-  <section id="home">
-    <h2>ホーム</h2>
-    <p>ようこそ、hayabeeの個人サイトへ。</p>
-  </section>
+<!-- カレンダー -->
+<div id="calendar" class="page">
+  <h2>カレンダー</h2>
 
-  <section id="calendar">
-    <h2>カレンダー</h2>
-    <p>ここに予定やスケジュールを載せられます。</p>
-  </section>
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+    <button onclick="prevMonth()">＜ 前の月</button>
+    <h3 id="monthTitle"></h3>
+    <button onclick="nextMonth()">次の月 ＞</button>
+  </div>
 
-  <section id="gallery">
-    <h2>画像</h2>
-    <p>ここに写真や画像ギャラリーを追加できます。</p>
-  </section>
-</main>
+  <table id="calendarTable"></table>
+</div>
 
-<footer style="text-align:center; padding:20px; color:#777;">
-  © 2026 hayabee
-</footer>
+<!-- 画像ページ -->
+<div id="gallery" class="page">
+  <h2>画像</h2>
+
+  <p>選択した日付：<span id="selectedDate">なし</span></p>
+
+  <input type="date" id="imgDate"><br><br>
+  <input type="file" id="imgFile" accept="image/*"><br><br>
+  <button onclick="addImage()">画像を追加</button>
+
+  <h3>画像一覧</h3>
+  <div id="imgList"></div>
+</div>
 
 <script>
-  function toggleMenu() {
-    const menu = document.getElementById("mobileMenu");
-    menu.style.display = (menu.style.display === "block") ? "none" : "block";
+  /* -------------------------
+     ページ切り替え
+  ------------------------- */
+  function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
   }
+
+  /* -------------------------
+     カレンダー機能
+  ------------------------- */
+  let currentYear = 2025;
+  let currentMonth = 1; // 2月
+
+  let schedules = {}; // 予定保存
+  let images = [];    // 画像保存
+
+  function renderCalendar() {
+    const monthTitle = document.getElementById("monthTitle");
+    const table = document.getElementById("calendarTable");
+
+    const monthNames = ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+    monthTitle.textContent = `${currentYear}年 ${monthNames[currentMonth]}`;
+
+    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+    const lastDate = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+    let html = "<tr><th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr><tr>";
+
+    for (let i = 0; i < firstDay; i++) html += "<td></td>";
+
+    for (let date = 1; date <= lastDate; date++) {
+      if ((firstDay + date - 1) % 7 === 0 && date !== 1) html += "</tr><tr>";
+
+      const key = `${currentYear}-${currentMonth+1}-${date}`;
+      const note = schedules[key] ? `<br><small>${schedules[key]}</small>` : "";
+
+      html += `<td onclick="selectDate(${date})">${date}${note}</td>`;
+    }
+
+    html += "</tr>";
+    table.innerHTML = html;
+  }
+
+  function prevMonth() {
+    currentMonth--;
+    if (currentMonth < 0) {
+      currentMonth = 11;
+      currentYear--;
+    }
+    renderCalendar();
+  }
+
+  function nextMonth() {
+    currentMonth++;
+    if (currentMonth > 11) {
+      currentMonth = 0;
+      currentYear++;
+    }
+    renderCalendar();
+  }
+
+  /* -------------------------
+     日付クリック → 画像ページへ
+  ------------------------- */
+  function selectDate(date) {
+    const key = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(date).padStart(2,'0')}`;
+
+    document.getElementById("selectedDate").textContent = key;
+    document.getElementById("imgDate").value = key;
+
+    showPage("gallery");
+  }
+
+  /* -------------------------
+     画像追加
+  ------------------------- */
+  function addImage() {
+    const date = document.getElementById("imgDate").value;
+    const file = document.getElementById("imgFile").files[0];
+
+    if (!date || !file) {
+      alert("日付と画像を選んでください");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      images.push({ date: date, src: e.target.result });
+      displayImages();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function displayImages() {
+    const list = document.getElementById("imgList");
+    list.innerHTML = "";
+
+    images.forEach(img => {
+      list.innerHTML += `
+        <div>
+          <p>${img.date}</p>
+          <img src="${img.src}" class="thumb">
+        </div>
+      `;
+    });
+  }
+
+  renderCalendar();
 </script>
 
 </body>
